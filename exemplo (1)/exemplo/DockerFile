@@ -1,9 +1,10 @@
-FROM maven:3.9.9-eclipse-temurin-23-alpine as build
-
+FROM maven:3.9.9-eclipse-temurin-23-alpine AS build
 COPY . /usr/src/mymaven/
-
 WORKDIR /usr/src/mymaven/
 RUN mvn clean install -Dmaven.test.skip=true
 
+FROM eclipse-temurin:23-alpine
+COPY --from=build /usr/src/mymaven/target/exemplo-0.0.1-SNAPSHOT.jar /app/exemplo.jar
+WORKDIR /app
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","target/exemplo-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "exemplo.jar"]
